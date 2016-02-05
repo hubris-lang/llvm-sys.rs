@@ -4,10 +4,13 @@ extern crate semver;
 use semver::{Version, VersionReq};
 use semver::ParseError::IncorrectParse;
 use std::process::Command;
+use std::env;
+use std::string::String;
 
 /// Get the output from running `llvm-config` with the given argument.
 fn llvm_config(arg: &str) -> String {
-    let stdout = Command::new("llvm-config")
+    let binary = env::var("LLVM_CONFIG").unwrap_or(String::from("llvm-config"));
+    let stdout = Command::new(binary)
         .arg(arg)
         .output()
         .unwrap_or_else(|e| panic!("Couldn't execute llvm-config. Error: {}", e))
